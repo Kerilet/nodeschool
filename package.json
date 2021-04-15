@@ -1,0 +1,17 @@
+{
+  "name": "nodeschool",
+  "version": "1.0.0",
+  "description": "Koichi, you truly are a reliable guy",
+  "main": "./src/index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.js"
+  },
+  "author": "Kerilet",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
