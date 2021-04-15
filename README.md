@@ -1,0 +1,21 @@
+# roadmap
+
+- Installing (DONE)
+- Nodemon 
+- Packages
+- Koa
+- EJS
+- File System
+- Sequelize
+    - Configuration
+    - Models
+    - Queries
+- Restful
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - Queries
+- Authorization (JWT)
+- Tests
+- Deployment
