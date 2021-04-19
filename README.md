@@ -3,9 +3,9 @@
 - Installing (DONE)
 - Nodemon (DONE)
 - Packages (DONE)
-- Koa
-- EJS
+- Koa (DONE)
 - File System
+- Routes
 - Sequelize
     - Configuration
     - Models

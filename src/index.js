@@ -1,15 +1,22 @@
+// Requesting libs
+const koa = require('koa');
+const Router = require('koa-router');
+const fs = require('fs');
 
-'use strict';
+// Create a koa instance
+const app = new koa();
+// Create a koa-router instance
+const router = new Router();
+// Get a json file async
+const dittoStream = fs.readFileSync('src/ditto.json');
 
-const koa = require('koa')
-const app = new koa()
 
-app.use(function *(){
-  this.body = "Hello World !!!";
+// GEt /pokemons/ditto
+router.get('/pokemons/ditto', async (ctx, /*next*/) => {
+  ctx.body = dittoStream.toString();
 });
 
-app.listen(1234)
-
-const lodash = require('lodash');
-const text = lodash.capitalize('kIrA qUeEn');
-console.log(text);
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
+  .listen(1234);   
