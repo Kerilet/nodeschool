@@ -1,8 +1,8 @@
 # roadmap
 
 - Installing (DONE)
-- Nodemon 
-- Packages
+- Nodemon (DONE)
+- Packages (DONE)
 - Koa
 - EJS
 - File System
