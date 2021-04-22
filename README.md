@@ -4,8 +4,8 @@
 - Nodemon (DONE)
 - Packages (DONE)
 - Koa (DONE)
-- File System
-- Routes
+- File System 
+- Routes 
 - Sequelize
     - Configuration
     - Models
