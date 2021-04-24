@@ -10,7 +10,16 @@ const router = new Router();
 // const pokemons = fs.readFileSync(path.resolve(__dirname, 'jsons/pokemons.json'));
 
 router.get('/pokemons', async (ctx, /*next*/) => {
-  ctx.body = pokemons.toString();
+  const jsonPath = path.join(__dirname, 'jsons');
+  const jsonDirectory = fs.readdir(jsonPath, function (err, files) {
+    if (err) {
+      return console.log('Unable to scan directory: ' + err);
+    } files.forEach(function (file) {
+      const json = file;
+      console.log(file);
+      ctx.body += file;
+    })
+  });
 });
 
 router.get('/pokemons/:pokemonName', async (ctx, /*next*/) => {
