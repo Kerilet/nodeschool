@@ -1,0 +1,17 @@
+{
+    "slug": "jean-pierre-polnareff",
+    "fullName": "Jean Pierre Polnareff",
+    "birthDate": "1997-02-06",
+    "birthLocation": "Paris, France",
+    "gender": "MALE",
+    "stand": "Silver Chariot",
+    "seasons": [
+        3,
+        5
+    ],
+    "occupation": "Protagonist",
+    "isImortal": false,
+    "deathDate": null,
+    "deathBy": null,
+    "deathCause": null
+}

@@ -1,0 +1,16 @@
+{
+    "fullName": "Muhammad Avdol",
+    "birthDate": "1877-02-06",
+    "birthLocation": "Cairo, Egypt",
+    "gender": "MALE",
+    "stand": "Magician's Red",
+    "seasons": [
+        3
+    ],
+    "occupation": "protagonist",
+    "isImortal": false,
+    "deathDate": "1999-03-26",
+    "deathBy": "Cream",
+    "deathCause": "Eaten Alive",
+    "slug": "muhammad-avdol"
+}

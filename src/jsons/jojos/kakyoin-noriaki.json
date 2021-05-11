@@ -1,0 +1,16 @@
+{
+    "slug": "kakyoin-noriaki",
+    "fullName": "Kakyoin Noriaki",
+    "birthDate": "1999-02-06",
+    "birthLocation": "Tokyo, Japan",
+    "gender": "MALE",
+    "stand": "Hierophant Green",
+    "seasons": [
+        3
+    ],
+    "occupation": "Student",
+    "isImortal": false,
+    "deathDate": "1999-03-26",
+    "deathBy": "DIO",
+    "deathCause": "impalement"
+}
