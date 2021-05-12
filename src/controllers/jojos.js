@@ -8,10 +8,25 @@ const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const slugify = require('slugify');
+const yup = require('yup');
 
 const readDir = util.promisify(fs.readdir);
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
+
+const jojoSchema = yup.object().shape({
+  fullName: yup.string().required(),
+  birthDate: yup.date(),
+  birthLocation: yup.string(),
+  gender: yup.string().oneOf(['MALE', 'FEMALE', 'OTHER', 'UNKNOWN']).required(),
+  stand: yup.string(),
+  seasons: yup.array().of(yup.number().min(1).max(8)),
+  occupation: yup.string(),
+  isImortal: yup.boolean(),
+  deathDate: yup.date(),
+  deathBy: yup.string(),
+  deathCause: yup.string(),
+});
 
 const compare = (str1, str2) => {
   const slugged1 = slugify(str1, {
@@ -37,10 +52,11 @@ module.exports = {
       const result = JSON.parse(buffer.toString());
       results.push(result);
     }
+    console.log(fullnameCT);
     const filtered = results
       .filter((item) => (fullname !== '' ? item.fullName === fullname : true))
       .filter((item) => (birthDate !== '' ? item.birthDate === birthDate : true))
-      .filter((item) => (fullnameCT !== '' ? compare(item.fullName, fullnameCT) : true));
+      .filter((item) => (fullnameCT ? compare(item.fullName, fullnameCT) : true));
     const offseted = filtered
       .filter((item, index) => index >= offset)
       .filter((item, index) => index < limit);
@@ -60,14 +76,19 @@ module.exports = {
   },
   async create(ctx) {
     const json = ctx.request.body;
-    const slugedJson = slugify(json.fullName, {
-      lower: true,
-    });
-    const name = slugedJson;
-    json.slug = slugedJson;
-    await writeFile(`src/jsons/jojos/${name}.json`, JSON.stringify(json, null, 4));
-    ctx.status = 201;
-    ctx.body = json;
+    try {
+      await jojoSchema.validate(json, { abortEarly: false });
+      const slugedJson = slugify(json.fullName, {
+        lower: true,
+      });
+      const name = slugedJson;
+      json.slug = slugedJson;
+      await writeFile(`src/jsons/jojos/${name}.json`, JSON.stringify(json, null, 4));
+      ctx.status = 201;
+      ctx.body = json;
+    } catch (error) {
+      ctx.throw(403, error);
+    }
   },
   async update(ctx) {
     const { slug } = ctx.params;
@@ -75,14 +96,15 @@ module.exports = {
     try {
       fs.unlinkSync(filePath);
       const json = ctx.request.body;
+      await jojoSchema.validate(json, { abortEarly: false });
       const slugedJson = slugify(json.fullName, {
         lower: true,
       });
       json.slug = slugedJson;
       await writeFile(`src/jsons/jojos/${slugedJson}.json`, JSON.stringify(json, null, 4));
       ctx.body = json;
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      ctx.throw(403, error);
     }
   },
   async delete(ctx) {
