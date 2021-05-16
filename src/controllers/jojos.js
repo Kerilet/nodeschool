@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
@@ -38,25 +39,65 @@ const compare = (str1, str2) => {
   return slugged1.includes(slugged2);
 };
 
+const compareGreaterThan = (characterAge, ageComparative) => {
+  const comparativeYear = parseInt(ageComparative.slice(0, 4));
+  const comparativeMonth = parseInt(ageComparative.slice(4, 6));
+  const comparativeDay = parseInt(ageComparative.slice(6, 8));
+  const birthYear = parseInt(characterAge.slice(0, 4));
+  const birthMonth = parseInt(characterAge.slice(6, 8));
+  const birthDay = parseInt(characterAge.slice(8, 10));
+  console.log(birthYear, comparativeYear, birthMonth, comparativeMonth, birthDay, comparativeDay);
+  if (birthYear > comparativeYear) {
+    if (birthMonth >= comparativeMonth) {
+      if (birthDay >= comparativeDay) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+const compareLessThan = (characterAge, ageComparative) => {
+  const comparativeYear = parseInt(ageComparative.slice(0, 4));
+  const comparativeMonth = parseInt(ageComparative.slice(4, 6));
+  const comparativeDay = parseInt(ageComparative.slice(6, 8));
+  const birthYear = parseInt(characterAge.slice(0, 4));
+  const birthMonth = parseInt(characterAge.slice(6, 8));
+  const birthDay = parseInt(characterAge.slice(8, 10));
+  console.log(birthYear, comparativeYear, birthMonth, comparativeMonth, birthDay, comparativeDay);
+  if (birthYear < comparativeYear) {
+    if (birthMonth >= comparativeMonth) {
+      if (birthDay >= comparativeDay) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 module.exports = {
   async readAll(ctx) {
     const results = [];
     const jsonPath = path.join(__dirname, '../jsons/jojos');
     const files = await readDir(jsonPath);
     const {
-      limit = 20, offset = 0, fullname = '', birthDate = '',
+      limit = 20, offset = 0, fullname = '', birthDate = '', isImortal = false,
     } = ctx.request.query;
     const fullnameCT = ctx.request.query['fullname.ct'];
+    const birthDateLT = ctx.request.query['birthdate.lt'];
+    const birthDateGT = ctx.request.query['birthdate.gt'];
     for (const filename of files) {
       const buffer = await readFile(path.join(__dirname, `../jsons/jojos/${filename}`));
       const result = JSON.parse(buffer.toString());
       results.push(result);
     }
-    console.log(fullnameCT);
     const filtered = results
       .filter((item) => (fullname !== '' ? item.fullName === fullname : true))
       .filter((item) => (birthDate !== '' ? item.birthDate === birthDate : true))
-      .filter((item) => (fullnameCT ? compare(item.fullName, fullnameCT) : true));
+      .filter((item) => (isImortal !== false ? item.isImortal === isImortal : true))
+      .filter((item) => (fullnameCT ? compare(item.fullName, fullnameCT) : true))
+      .filter((item) => (birthDateLT ? compareLessThan(item.birthDate, birthDateLT) : true))
+      .filter((item) => (birthDateGT ? compareGreaterThan(item.birthDate, birthDateGT) : true));
     const offseted = filtered
       .filter((item, index) => index >= offset)
       .filter((item, index) => index < limit);
