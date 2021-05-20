@@ -75,37 +75,61 @@ const compareLessThan = (characterAge, ageComparative) => {
   return false;
 };
 
+const compareBoolean = (urlBoolean) => {
+  if (urlBoolean === 'true') {
+    return true;
+  }
+  if (urlBoolean === 'false') {
+    return false;
+  }
+  throw new Error('Character Boolean must be true or false');
+};
+
+const compareArrays = (array, str) => {
+  const num = parseInt(str);
+  return array.includes(num);
+};
+
 module.exports = {
   async readAll(ctx) {
-    const results = [];
-    const jsonPath = path.join(__dirname, '../jsons/jojos');
-    const files = await readDir(jsonPath);
-    const {
-      limit = 20, offset = 0, fullname = '', birthDate = '', isImortal = false,
-    } = ctx.request.query;
-    const fullnameCT = ctx.request.query['fullname.ct'];
-    const birthDateLT = ctx.request.query['birthdate.lt'];
-    const birthDateGT = ctx.request.query['birthdate.gt'];
-    for (const filename of files) {
-      const buffer = await readFile(path.join(__dirname, `../jsons/jojos/${filename}`));
-      const result = JSON.parse(buffer.toString());
-      results.push(result);
+    try {
+      const results = [];
+      const jsonPath = path.join(__dirname, '../jsons/jojos');
+      const files = await readDir(jsonPath);
+      const {
+        limit = 20, offset = 0, fullname = '', gender = '', birthDate = '', isImortal = '', birthLocation = '', stand = '', occupation = '', slug = '', seasons = '',
+      } = ctx.request.query;
+      const fullnameCT = ctx.request.query['fullname.ct'];
+      const birthDateLT = ctx.request.query['birthdate.lt'];
+      const birthDateGT = ctx.request.query['birthdate.gt'];
+      for (const filename of files) {
+        const buffer = await readFile(path.join(__dirname, `../jsons/jojos/${filename}`));
+        const result = JSON.parse(buffer.toString());
+        results.push(result);
+      }
+      const filtered = results
+        .filter((item) => (fullname !== '' ? item.fullName === fullname : true))
+        .filter((item) => (gender !== '' ? item.gender === gender : true))
+        .filter((item) => (occupation !== '' ? item.occupation === occupation.toLowerCase() : true))
+        .filter((item) => (birthDate !== '' ? item.birthDate === birthDate : true))
+        .filter((item) => (isImortal !== '' ? item.isImortal === compareBoolean(isImortal) : true))
+        .filter((item) => (fullnameCT ? compare(item.fullName, fullnameCT) : true))
+        .filter((item) => (seasons ? compareArrays(item.seasons, seasons) : true))
+        .filter((item) => (slug ? compare(item.slug, slug) : true))
+        .filter((item) => (birthLocation ? compare(item.birthLocation, birthLocation) : true))
+        .filter((item) => (stand ? compare(item.stand, stand) : true))
+        .filter((item) => (birthDateLT ? compareLessThan(item.birthDate, birthDateLT) : true))
+        .filter((item) => (birthDateGT ? compareGreaterThan(item.birthDate, birthDateGT) : true));
+      const offseted = filtered
+        .filter((item, index) => index >= offset)
+        .filter((item, index) => index < limit);
+      ctx.body = {
+        count: filtered.length,
+        results: offseted,
+      };
+    } catch (error) {
+      ctx.throw(403, error);
     }
-    const filtered = results
-      .filter((item) => (fullname !== '' ? item.fullName === fullname : true))
-      .filter((item) => (birthDate !== '' ? item.birthDate === birthDate : true))
-      .filter((item) => (isImortal !== false ? item.isImortal === isImortal : true))
-      .filter((item) => (fullnameCT ? compare(item.fullName, fullnameCT) : true))
-      .filter((item) => (birthDateLT ? compareLessThan(item.birthDate, birthDateLT) : true))
-      .filter((item) => (birthDateGT ? compareGreaterThan(item.birthDate, birthDateGT) : true));
-    const offseted = filtered
-      .filter((item, index) => index >= offset)
-      .filter((item, index) => index < limit);
-
-    ctx.body = {
-      count: filtered.length,
-      results: offseted,
-    };
   },
   async readSingle(ctx) {
     try {

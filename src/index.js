@@ -1,3 +1,4 @@
+require('./config/database');
 const Koa = require('koa');
 const koaBody = require('koa-body');
 const routes = require('./routes');
@@ -13,4 +14,4 @@ app
   })))
   .use(routes.routes())
   .use(routes.allowedMethods())
-  .listen(3000);
+  .listen(3000, () => console.log('Listen on http://localhost:3000'));
