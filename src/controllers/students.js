@@ -3,7 +3,7 @@ const connection = require('../config/database');
 module.exports = {
   async readAll(ctx) {
     const {
-      limit = 20, offset = 0, gender = '', countryName = '', // birthDate = '', isImortal = '', birthLocation = '', stand = '', occupation = '', slug = '', // seasons = [],
+      limit = 20, offset = 0, gender = '', countryName = '', birthDate = '', streetName = '', houseNumber = '', complement = '', district = '', cityName = '', stateName = '', zipcode = '', height = '', weight = '', familyMemberCount = '', motherName = '', fatherName = '', monthlyWage = '', email = '', phoneNumber = '', teamID = '', sportID = '',
     } = ctx.request.query;
     let queryBase = 'SELECT * FROM students WHERE 1 = 1 ';
     if (gender) queryBase += ` AND gender = "${gender}"`;
